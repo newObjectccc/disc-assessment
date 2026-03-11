@@ -1,0 +1,46 @@
+services:
+  disc-assessment:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: disc-assessment:latest
+    expose:
+      - "3002"
+    deploy:
+      replicas: 1
+    environment:
+      # 基础配置
+      - NODE_ENV=production
+      - PORT=3002
+      - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL}
+
+      # 数据库配置（共用 PostgreSQL 实例，不同数据库）
+      - DATABASE_URL=${DATABASE_URL}
+
+      # JWT 安全配置
+      - JWT_SECRET=${JWT_SECRET}
+
+      # AI 配置 (OpenAI Compatible)
+      - AI_BASE_URL=${AI_BASE_URL}
+      - AI_API_KEY=${AI_API_KEY}
+      - AI_MODEL=${AI_MODEL}
+
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://localhost:3002/api/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - 1panel-network
+
+networks:
+  1panel-network:
+    external: true
