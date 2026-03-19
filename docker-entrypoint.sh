@@ -4,8 +4,13 @@ set -e
 echo "Running Prisma migrations..."
 node_modules/.bin/prisma migrate deploy
 
-echo "Seeding database (if needed)..."
-# 只在没有管理员账号时 seed（可选）
+if [ "${RUN_SEED}" = "true" ]; then
+  echo "Seeding database..."
+  node_modules/.bin/ts-node --compiler-options '{"module":"CommonJS"}' prisma/seed.ts
+  echo "Seed completed."
+else
+  echo "Skipping seed. (Set RUN_SEED=true to seed on next startup)"
+fi
 
 echo "Starting disc-assessment on port ${PORT:-3002}..."
 exec node server.js

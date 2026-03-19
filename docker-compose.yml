@@ -17,6 +17,9 @@ services:
       # 数据库配置（共用 PostgreSQL 实例，不同数据库）
       - DATABASE_URL=${DATABASE_URL}
 
+      # 是否执行数据库 seed（首次部署时设为 true，之后改回 false）
+      - RUN_SEED=${RUN_SEED:-false}
+
       # JWT 安全配置
       - JWT_SECRET=${JWT_SECRET}
 
