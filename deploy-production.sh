@@ -131,7 +131,7 @@ if [ "$RUN_MIGRATE" = true ] || [ "$RUN_DEPLOY" = true ]; then
   echo -e "\n${YELLOW}[3.5] 确保数据库存在...${NC}"
   DB_NAME=$(ssh $REMOTE_HOST "cd $REMOTE_DIR && grep '^DATABASE_URL=' .env | sed 's|.*postgresql://[^/]*/||' | cut -d'?' -f1")
   DB_USER=$(ssh $REMOTE_HOST "cd $REMOTE_DIR && grep '^DATABASE_URL=' .env | sed 's|.*://||' | cut -d':' -f1")
-  ssh $REMOTE_HOST "docker exec postgresql psql -U $DB_USER -tc \"SELECT 1 FROM pg_database WHERE datname='$DB_NAME'\" | grep -q 1 || docker exec postgresql psql -U $DB_USER -c \"CREATE DATABASE $DB_NAME;\""
+  ssh $REMOTE_HOST "docker exec 1Panel-postgresql-wVrQ psql -U $DB_USER -tc \"SELECT 1 FROM pg_database WHERE datname='$DB_NAME'\" | grep -q 1 || docker exec 1Panel-postgresql-wVrQ psql -U $DB_USER -c \"CREATE DATABASE $DB_NAME;\""
   echo -e "${GREEN}✓ 数据库 $DB_NAME 已就绪${NC}"
 fi
 
