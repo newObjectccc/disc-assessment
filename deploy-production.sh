@@ -145,7 +145,7 @@ if [ "$RUN_MIGRATE" = true ]; then
 
   # 获取 PostgreSQL 容器的实际 IP
   echo "获取数据库容器 IP..."
-  DB_CONTAINER_IP=$(ssh $REMOTE_HOST "docker inspect postgresql --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}'")
+  DB_CONTAINER_IP="127.0.0.1"
 
   # 解析数据库 URL 并替换 host 为本地隧道
   LOCAL_DB_URL=$(echo "$REMOTE_DB_URL" | sed "s|@[^/]*|@localhost:$LOCAL_DB_PORT|")
@@ -171,7 +171,7 @@ if [ "$RUN_SEED" = true ]; then
   if [ "$RUN_MIGRATE" = false ]; then
     REMOTE_DB_URL=$(ssh $REMOTE_HOST "cd $REMOTE_DIR && grep '^DATABASE_URL=' .env | cut -d'=' -f2- | tr -d '\"'")
     LOCAL_DB_URL=$(echo "$REMOTE_DB_URL" | sed "s|@[^/]*|@localhost:$LOCAL_DB_PORT|")
-    DB_CONTAINER_IP=$(ssh $REMOTE_HOST "docker inspect postgresql --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}'")
+    DB_CONTAINER_IP="127.0.0.1"
     echo "建立 SSH 隧道 (localhost:$LOCAL_DB_PORT -> $DB_CONTAINER_IP:$REMOTE_DB_PORT)..."
     ssh -f -N -L $LOCAL_DB_PORT:$DB_CONTAINER_IP:$REMOTE_DB_PORT $REMOTE_HOST
     TUNNEL_PID=$(lsof -ti:$LOCAL_DB_PORT | head -1)

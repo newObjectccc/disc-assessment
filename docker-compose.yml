@@ -42,7 +42,9 @@ services:
       retries: 3
       start_period: 40s
     networks:
-      - 1panel-network
+      1panel-network:
+        aliases:
+          - disc-assessment
 
 networks:
   1panel-network:
